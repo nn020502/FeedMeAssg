@@ -3,16 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>McDonald's order</title>
 
     <style>
-        #section2,
-        #section3,
-        #section4 {
-            display: none;
-        }
-
         /* Adds space between tables */
         .table-container {
             display: flex;
@@ -23,8 +17,6 @@
             border-collapse: collapse;
             width: 150px;
         }
-
-  
     </style>
 
     <script>
@@ -35,44 +27,13 @@
         let processingTimeoutIDs = [];
 
 
-        function showSection() { //display respective section
-            const role = document.getElementById("role").value;
-
-            document.getElementById("section1").style.display = "none"; //hide section
-
-            if (role == "1") {
-                document.getElementById("section2").style.display = "block";
-            }
-            else if (role == "2") {
-                document.getElementById("section3").style.display = "block";
-            }
-            else {
-                document.getElementById("section4").style.display = "block";
-            }
-        }
-
-        function endSection() { //clear current section
-            document.getElementById("section1").style.display = "block"; //show section
-            document.getElementById("section2").style.display = "none";
-            document.getElementById("section3").style.display = "none";
-            document.getElementById("section4").style.display = "none";
-        }
-
-
-        function clearTableContent(activeSection) { //clear content 
+        function clearTableContent() { //clear content 
             let tablePending, tableComplete, tableProcess;
 
-            if (activeSection === 'normal') {
-                tablePending = document.getElementById("tablePending");
-                tableComplete = document.getElementById("tableComplete");
-            } else if (activeSection === 'vip') {
-                tablePending = document.getElementById("tablePendingV");
-                tableComplete = document.getElementById("tableCompleteV");
-            } else {
-                tablePending = document.getElementById("tablePendingM");
-                tableComplete = document.getElementById("tableCompleteM");
-                tableProcess = document.getElementById("tableProcessM");
-            }
+            tablePending = document.getElementById("tablePendingM");
+            tableComplete = document.getElementById("tableCompleteM");
+            tableProcess = document.getElementById("tableProcessM");
+
 
 
             if (tablePending) {
@@ -126,121 +87,64 @@
             });
 
 
+            displayOrderList();
 
-            if (types == 'vip') {
-                displayOrderList('vip');
-            }
-            else {
-                displayOrderList('normal');
-            }
         }
 
 
-        function displayOrderList(types) { //display order's status of normal or VIP customer
+        function displayOrderList() { //display order's status of normal or VIP customer
 
             if (orders.length > 0) {
-                if (types == 'normal') {
-                    
-                    orders.forEach(([orderID, status, type]) => {
-                        console.log("displayOrderList", orderID);
 
-                        if (status == 'pending') {
-                            const table = document.getElementById('tablePending');
-                            const newRow = document.createElement('tr');
-                            const newCol = document.createElement('td');
-                            newCol.textContent = orderID;
-                            newRow.appendChild(newCol);
+                orders.forEach(([orderID, status, type]) => {
+                    console.log("displayOrderList", orderID);
 
-                            table.appendChild(newRow);
-                           
-                        }
-                        else if (status == 'complete') {
-                            const table = document.getElementById('tableComplete');
-                            const newRow = document.createElement('tr');
-                            const newCol = document.createElement('td');
-                            newCol.textContent = orderID;
-                            newRow.appendChild(newCol);
+                    if (status == 'pending') {
+                        const table = document.getElementById('tablePendingM');
+                        const newRow = document.createElement('tr');
+                        const newCol = document.createElement('td');
+                        newCol.textContent = orderID;
+                        newRow.appendChild(newCol);
 
-                            table.appendChild(newRow);
-                           
-                        }
-                    });
-                } else if (types == 'vip') {
-                    
-                    orders.forEach(([orderID, status, type]) => {
-                        console.log("displayOrderList", orderID);
+                        table.appendChild(newRow);
 
-                        if (status == 'pending') {
-                            const table = document.getElementById('tablePendingV');
-                            const newRow = document.createElement('tr');
-                            const newCol = document.createElement('td');
-                            newCol.textContent = orderID;
-                            newRow.appendChild(newCol);
+                    }
+                    else if (status == 'complete') {
+                        const table = document.getElementById('tableCompleteM');
+                        const newRow = document.createElement('tr');
+                        const newCol = document.createElement('td');
+                        newCol.textContent = orderID;
+                        newRow.appendChild(newCol);
 
-                            table.appendChild(newRow);
-                            
-                        }
-                        else if (status == 'complete') {
-                            const table = document.getElementById('tableCompleteV');
-                            const newRow = document.createElement('tr');
-                            const newCol = document.createElement('td');
-                            newCol.textContent = orderID;
-                            newRow.appendChild(newCol);
+                        table.appendChild(newRow);
+                    }
 
-                            table.appendChild(newRow);
-                        }
-                    });
-
-                }
-                else {
-                    
-                    orders.forEach(([orderID, status, type]) => {
-                        console.log("displayOrderList", orderID);
-
-                        if (status == 'pending') {
-                            const table = document.getElementById('tablePendingM');
-                            const newRow = document.createElement('tr');
-                            const newCol = document.createElement('td');
-                            newCol.textContent = orderID;
-                            newRow.appendChild(newCol);
-
-                            table.appendChild(newRow);
-                            
-                        }
-                        else if (status == 'complete') {
-                            const table = document.getElementById('tableCompleteM');
-                            const newRow = document.createElement('tr');
-                            const newCol = document.createElement('td');
-                            newCol.textContent = orderID;
-                            newRow.appendChild(newCol);
-
-                            table.appendChild(newRow);
-                        }
-
-                    });
-                }
+                });
             } else {
+
                 console.log("Orders array is empty.");
                 alert("Currently Order is Empty! Try to create new order.");
                 return;
             }
-
         }
+
+
+
 
 
         function addBot() { //process order
             const processOrder = () => {
-                
+
                 const currentOrder = orders.find(order => order[1] === 'pending'); // Find the order that is in 'pending' status
 
                 if (currentOrder) {
-            
+
                     const [orderID] = currentOrder; //unpack the orderID from the currentOrder so can be directly used the variable name later
                     console.log('addbot-orderid', orderID);
 
                     currentOrder[1] = 'process'; // Update status to 'process'
-                    clearTableContent('manager');
-                    displayOrderList('manager');
+                    clearTableContent();
+                    displayOrderList();
 
                     const table = document.getElementById('tableProcessM');
                     const newRow = document.createElement('tr');
@@ -258,13 +162,13 @@
                             table.deleteRow(0); // Remove the process order
                         }
 
-                        clearTableContent('manager');
-                        displayOrderList('manager');
-                      
-                        processOrder(); 
+                        clearTableContent();
+                        displayOrderList();
+
+                        processOrder();
 
                     }, 10000); //set 10 seconds to automatic call the next order
-                    
+
                     processingTimeoutIDs.push(timeoutID); // store timeout ID to allow it to be cleared later
 
                 } else {
@@ -274,19 +178,19 @@
             };
 
 
-            processOrder(); 
+            processOrder();
         }
 
 
 
         function deleteBot() { //delete processing order
-            
+
             processingTimeoutIDs.forEach(timeoutID => {
                 clearTimeout(timeoutID); //clear processing timeout for all orders
             });
 
             processingTimeoutIDs = [];  // reset the array
-       
+
             orders.forEach(order => { // revert all orders with 'process' status back to 'pending'
                 if (order[1] === 'process') {
                     order[1] = 'pending';
@@ -294,8 +198,8 @@
                 }
             });
 
-            clearTableContent('manager');
-            displayOrderList('manager');
+            clearTableContent();
+            displayOrderList();
         }
 
 
@@ -305,96 +209,22 @@
 
 <body>
 
-    <form id="section1">
-        <h1>
-            Welcome to McDonald!
-        </h1>
-        <p>
-            Choose the role:
-        </p>
-        <ol>
-            <li id="role1">Normal Customer</li>
-            <li id="role2">VIP Customer</li>
-            <li id="role3">Manager</li>
-        </ol>
-        <p>
-            Role: <input type="text" id="role">
-            <button type="button" value="next" onclick="showSection()">Next</button>
-        </p>
-
-    </form>
-
-    <form id="section2">
-        <h3>
-            Welcome, Normal Customer!
-        </h3>
-        <p style="display: inline; margin-right: 10px;"><button type="button" onclick="displayOrderList('normal')">Display Order List</button></p>
-        <p style="display: inline;"><button type="button" onclick="clearTableContent('normal');generateOrder('normal')">+ New Normal
-                Order</button></p><br>
-        <div class="table-container"  style="margin-top: 20px;">
-            <table>
-                <tr>
-                    <td>Pending</td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <td>Complete</td>
-                </tr>
-            </table>
-        </div>
-        <div class="table-container">
-            <table id="tablePending">
-            </table>
-            <table id="tableComplete">
-            </table>
-        </div>
-
-        
-
-        <p><button type="button" onclick="endSection();clearTableContent('normal')">Exit</button></p>
-        </p>
-    </form>
-
-    <form id="section3">
-        <h3>
-            Welcome, VIP Customer!
-        </h3>
-        <p style="display: inline; margin-right: 10px;"><button type="button" onclick="displayOrderList('vip')">Display Order List</button></p>
-        <p style="display: inline;"><button type="button" onclick="clearTableContent('vip');generateOrder('vip')">+ New VIP Order</button></p>
-        <div class="table-container"  style="margin-top: 20px;">
-            <table>
-                <tr>
-                    <td>Pending</td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <td>Complete</td>
-                </tr>
-            </table>
-        </div>
-        <div class="table-container">
-            <table id="tablePendingV">
-            </table>
-            <table id="tableCompleteV">
-            </table>
-        </div>
-        <p>
-            <button type="button" onclick="endSection();clearTableContent('vip')">Exit</button>
-        </p>
-        </p>
-
-    </form>
-
     <form id="section4">
         <h3>
-            Welcome, Manager!
+            Welcome to Mcd Order Page!
         </h3>
-        <p style="display: inline; margin-right: 10px;"><button type="button" onclick="displayOrderList('manager')">Display Order List</button></p>
-        <p style="display: inline; margin-right: 10px;"><button type="button" onclick="addBot()">+ Bot</button></p>
-        <p style="display: inline;"><button type="button" onclick="deleteBot()">- Bot</button></p>
-        <div class="table-container"  style="margin-top: 20px;">
+
+        <p style="display: inline"><button type="button" onclick="clearTableContent();generateOrder('normal')">+ New
+                Normal Order</button></p>
+
+        <p style="display: inline;"><button type="button" onclick="clearTableContent();generateOrder('vip')">+ New
+                VIP Order</button></p>
+
+        <p style="display: inline"><button type="button" onclick="addBot()">+ Bot</button></p>
+
+        <p style="display: inline"><button type="button" onclick="deleteBot()">- Bot</button></p>
+
+        <div class="table-container" style="margin-top: 20px;">
             <table>
                 <tr>
                     <td>Pending</td>
@@ -411,6 +241,7 @@
                 </tr>
             </table>
         </div>
+
         <div class="table-container">
             <table id="tablePendingM">
             </table>
@@ -419,9 +250,7 @@
             <table id="tableProcessM">
             </table>
         </div>
-        <p>
-            <button type="button" onclick="endSection()">Exit</button>
-        </p>
+
         </p>
 
     </form>
